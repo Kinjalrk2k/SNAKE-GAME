@@ -2,13 +2,24 @@
 The 90s Snakes Game simulation
 
 ### Instructions for compilation
-Compile the code to produce a executable file by the following command:
+Compile the code to produce the executable main file by the following command:
 ````
-g++ main.cpp include\snake.cpp -o main
+g++ main.cpp include\snake.cpp include\game.cpp -o main
 ````
-Run the main.exe file
+Compile the code to produce the executable mazes\maze_creator.exe file by the following command:
+````
+g++ mazes\maze_creator.cpp include\snake.cpp -o mazes\maze_creator
+````
+Run the main.exe file for playing the game and maze_creator.exe for creating a maze
 
 ### Notes
 Strictly meant for compilation and usage under Windows only (preferably using MinGW compiler toolkit).
 This project has not been made "cross-platform".
 It uses functions like system(), getch(), etc...
+
+This project is still under development. Parts of the source codes may not be well documented.
+Also suitable prompts may not be available for the user at the moment.
+
+More features and fixes are yet to come. Meanwhile suggestions, ideas, bug reports are welcomed.
+
+<br>***Kinjal Raykarmakar***

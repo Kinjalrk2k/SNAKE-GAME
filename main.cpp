@@ -1,4 +1,5 @@
 #include "include\\snake.h"
+#include "include\\game.h"
 
 void window()
 {
@@ -16,7 +17,8 @@ int main(int argc, char const *argv[])
     getch();
 
     game G;
-    strcpy(G.full_file_location, "mazes\\maze0.txt");
+    //strcpy(maze_file_location, "mazes\\maze0.txt");
+    strcpy(maze_file_location, "mazes\\maze0.dat");
     G.run_player();
 
     getch();

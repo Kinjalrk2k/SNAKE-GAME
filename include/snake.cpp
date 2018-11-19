@@ -1,12 +1,16 @@
 #include "snake.h"
 
+position start = {1, 1}; //  starting position of the maze
+int speed = 100;
+char maze_file_location[100];
+
 //  standard gotoxy function using seperate x and y arguments
 void gotoxy(int x, int y)
 {
     COORD coord;
     coord.X = x;
     coord.Y = y;
-    SetConsoleCursorPosition(GetStdHandle(STD_OUTPUT_HANDLE), coord);
+    SetConsoleCursorPosition(GetStdHandle(STD_OUTPUT_HANDLE), coord); 
 }
 
 //  standard gotoxy function using a pointer structure
@@ -38,6 +42,83 @@ maze::maze() : maze_state{0}
 {
     strcpy(name, "Default Maze");
     difficulty = 0;
+}
+
+void maze::write_maze()
+{
+    maze m;
+    fstream f;
+
+    char n[100];
+    cout<<"Enter the name of the maze: ";
+    gets(n);
+
+    char file_path[100] = "mazes\\";
+    strcat(file_path, n);
+    strcpy(m.name, n);
+    strcat(file_path, ".dat");
+
+    f.open(file_path, ios::out | ios::binary);
+
+    system("cls");
+    cout<<"Create the maze: ";
+    _getch();
+    start = {0, 0};
+
+    system("cls");
+    m.print_maze();
+
+    int x=0, y=0;
+    while(true)
+    {
+        gotoxy_offset(x, y);
+
+        system("pause>nul");
+
+        if((GetAsyncKeyState(VK_UP) & 0x8000) && y>0)
+            y--;
+
+        else if((GetAsyncKeyState(VK_DOWN) & 0x8000) && y<ymax-1)
+            y++;
+
+        else if((GetAsyncKeyState(VK_LEFT) & 0x8000) && x>0)
+            x--;
+
+        else if((GetAsyncKeyState(VK_RIGHT) & 0x8000) && x<xmax-1)
+            x++;
+
+        else if(GetAsyncKeyState(VK_SPACE) & 0x8000)
+        {
+            if(m.maze_state[y][x] == 0)
+                m.maze_state[y][x] = 1;
+            else
+                m.maze_state[y][x] = 0;
+            
+            system("cls");
+            m.print_maze();
+        }
+        else if((GetAsyncKeyState(VK_RETURN) & 0x8000))
+            break;
+    }
+
+    gotoxy(0, ymax+1);
+    cout<<"Press any key to save the maze";
+    getch();
+
+    f.write((char*)&m, sizeof(m));
+
+    f.close();
+}
+
+void maze::load_maze()
+{
+    maze m;
+    fstream f;
+    f.open(maze_file_location, ios::in | ios::binary);
+
+    f.read((char*)&m, sizeof(m));
+    f.close();
+    *this = m;
 }
 
 void maze::print_maze()
@@ -182,139 +263,3 @@ position snake::rotate(direction dir)
 
     return tail;
 }
-
-game::game()
-{
-    score = 0;
-}
-
-void game::load_maze()
-{
-    fstream f;
-    f.open(full_file_location, ios::in);
-    for(int i=0; i<ymax; i++)
-    {
-        for(int j=0; j<xmax; j++)
-        {
-            f>>maze_state[i][j];
-        }
-    }
-}
-
-bool game::validate_position(position pos)
-{
-    for(int i=1; i<size-1; i++)
-    {
-        if(pos.x == body[i].x && pos.y == body[i].y)
-            return false;
-    }
-
-    if(maze_state[pos.y][pos.x] == 1)
-        return false;
-
-    return true;
-}
-
-void game::print_UI()
-{
-    gotoxy(0,0);
-    cout<<(char)201;
-    for(int i=0; i<xmax; i++)
-        cout<<(char)205;
-    cout<<(char)187;
-
-    for(int i=0; i<ymax; i++)
-    {
-        gotoxy(0, i+1); cout<<(char)186;
-        gotoxy(xmax+1, i+1);  cout<<(char)186;
-    }
-
-    gotoxy(0,26);
-    cout<<(char)200;
-    for(int i=0; i<xmax; i++)
-        cout<<(char)205;
-    cout<<(char)188;
-
-    gotoxy(0, ymax+3);   cout<<"Score: "<<score;
-
-    /*TODO: ADD MORE*/
-}
-
-position game::generate_food()
-{
-    do
-    {
-        food.x = rand()%xmax;
-        food.y = rand()%ymax;
-    }
-    while(this->validate_position(food) == false);
-
-    return food;
-}
-
-//  0 = game over   1 = game running
-void game::print_status(int s)
-{
-    gotoxy(0, ymax+4);   cout<<"Score: "<<score;
-    gotoxy(0, ymax+3);
-    switch(s)
-    {
-        case 0: cout<<"GAME OVER";  break;
-        case 1: cout<<"PLAYING GAME"; break;
-    }
-}
-
-void game::run_player()
-{
-    srand(time(NULL));
-
-    print_UI();
-    start = {1, 1};
-    load_maze();
-    print_maze();
-    print_snake();
-
-    gotoxy_offset(generate_food());    cout<<(char)ascii_food;
-    gotoxy(0, ymax+4);
-
-    getch();
-
-    while(true)
-    {
-        if(head.x == food.x && head.y == food.y)
-        {
-            size++;
-            score++;
-            gotoxy_offset(generate_food());    cout<<(char)ascii_food;
-            gotoxy(0, ymax+4);
-            continue;
-        }
-
-        if((GetAsyncKeyState(VK_UP) & 0x8000) && flow != DOWN)
-            gotoxy_offset(rotate(UP));
-
-        else if((GetAsyncKeyState(VK_DOWN) & 0x8000) && flow != UP)
-            gotoxy_offset(rotate(DOWN));
-
-        else if((GetAsyncKeyState(VK_LEFT) & 0x8000) && flow !=RIGHT)
-            gotoxy_offset(rotate(LEFT));
-
-        else if((GetAsyncKeyState(VK_RIGHT) & 0x8000) && flow != LEFT)
-            gotoxy_offset(rotate(RIGHT));
-
-        else
-            gotoxy_offset(move());
- 
-        cout<<" ";
-        if(validate_position(head) == false)
-        {
-            print_status(0);
-            return;
-        }
-
-        print_snake();
-        print_status(1);
-        Sleep(speed);
-    }
-}
-

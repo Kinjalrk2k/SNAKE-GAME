@@ -12,10 +12,9 @@
 #define xmax 75
 #define ymax 25
 
-#define ascii_food 167
+#define ascii_food 233
 #define ascii_wall 178
 #define ascii_body 219
-
 
 using namespace std;
 
@@ -31,13 +30,17 @@ struct position
 void gotoxy(int x, int y);
 void gotoxy(position pos);
 
+void gotoxy_offset(int x, int y);
+void gotoxy_offset(position pos);
+
+extern position start; //  starting position of the maze
+extern int speed;
+extern char maze_file_location[100];
+
 enum direction
 {
     UP, DOWN, LEFT, RIGHT
 };
-
-static position start; //  starting position of the maze
-static int speed = 100;
 
 //  maze class
 class maze
@@ -49,6 +52,8 @@ class maze
 
     public:
         maze();
+        void write_maze();
+        void load_maze();
         void print_maze();
         int calc_difficulty();
 };
@@ -67,24 +72,5 @@ class snake
         position move();
         position rotate(direction dir);
 };
-
-class game : protected snake, protected maze
-{
-    protected:
-        int score;
-        position food;
-
-    public:
-        game();
-        char full_file_location[100];
-        void load_maze();
-        void print_UI();
-        void print_status(int s);
-        bool validate_position(position pos);
-        position generate_food();
-        void run_player();
-        
-};
-
 
 #endif

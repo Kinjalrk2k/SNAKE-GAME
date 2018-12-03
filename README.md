@@ -3,7 +3,7 @@ The 90s Snakes Game simulation.
 
 [![ForTheBadge built-with-love](http://ForTheBadge.com/images/badges/built-with-love.svg)](https://github.com/Kinjalrk2k)
 [![GitHub license](https://img.shields.io/github/license/Naereen/StrapDown.js.svg)](https://github.com/Kinjalrk2k/SNAKE-GAME/blob/master/LICENSE)
-[![GitHub release](https://img.shields.io/github/release/Naereen/StrapDown.js.svg)](https://github.com/Kinjalrk2k/SNAKE-GAME/releases)
+[![GitHub release](https://img.shields.io/badge/release-v1.0-blue.svg)](https://github.com/Kinjalrk2k/SNAKE-GAME/releases)
 
 
 

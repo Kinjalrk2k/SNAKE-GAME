@@ -2,6 +2,7 @@
 #define GAME_H
 
 #include "snake.h"
+#include <mmsystem.h>
 
 void ascii_art(const char* loc, int x, int y);
 

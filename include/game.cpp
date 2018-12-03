@@ -136,6 +136,14 @@ void game::print_status(int s)
     }
 }
 
+void write_score(int score)
+{
+    fstream f;
+    f.open("scores\\scores.dat", ios::out | ios::binary | ios::app);
+    f<<" "<<score;
+    f.close();
+}
+
 void game::run_player()
 {
     HANDLE hConsole = GetStdHandle(STD_OUTPUT_HANDLE);
@@ -158,6 +166,8 @@ void game::run_player()
     {
         if(head.x == food.x && head.y == food.y)
         {
+            //system("start sounds\\sounder.exe sounds\\eat.wav");
+            //PlaySound((LPCSTR)"sounds\\eat.wav", NULL, SND_FILENAME|SND_LOOP|SND_ASYNC);
             size++;
             score++;
             SetConsoleTextAttribute(hConsole, FOREGROUND_RED | FOREGROUND_INTENSITY);
@@ -197,6 +207,7 @@ void game::run_player()
         {
             print_status(0);
             print_snake(1);
+            write_score(score);
             system("pause>nul");
             while (cin.get() != '\n');
             return;

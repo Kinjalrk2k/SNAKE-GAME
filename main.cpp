@@ -11,6 +11,24 @@ void window()
     MoveWindow(console, 100, 100, 750, 570 , TRUE);
 }
 
+void read_score()
+{
+    int score, max=0;
+    fstream f;
+    f.open("scores\\scores.dat", ios::in | ios::binary);
+
+    while(!f.eof())
+    {
+        f>>score;
+        if(score > max)
+            max = score;
+        cout<<score<<endl;
+    }    
+
+    cout<<endl<<"Highest Score: "<<max;
+    f.close();
+}
+
 int main(int argc, char const *argv[])
 {
     window();
@@ -66,7 +84,8 @@ int main(int argc, char const *argv[])
         case 1: //  Scoreboard
         {
             system("cls");
-            cout<<"This feature is not yet implemented. Will be updated in the updates to come!";
+            cout<<"Your Scoreboard"<<endl<<endl;
+            read_score();
             _getch();
             goto main_menu;
             break;

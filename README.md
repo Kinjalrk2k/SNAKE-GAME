@@ -21,6 +21,9 @@ g++ mazes\maze_creator.cpp include\snake.cpp -o mazes\maze_creator
 Run the main.exe file for playing the game and maze_creator.exe for creating a maze
 (Note: Maze creator is unstable for use)
 
+Shown Below a typical SNAKES GAME gameplay from this project:
+![ezgif-4-2819c33a913d](https://user-images.githubusercontent.com/34955854/49386147-f41a4800-f744-11e8-8eb8-76cd7c81b218.gif)
+
 ### Notes
 Strictly meant for compilation and usage under Windows only (preferably using MinGW compiler toolkit).
 This project has not been made "cross-platform".

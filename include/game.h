@@ -3,16 +3,14 @@
 
 #include "snake.h"
 
-
-
 void ascii_art(const char* loc, int x, int y);
 
-class game : protected snake, protected maze
+class game : public snake, public maze
 {
     protected:
         int score;
         position food;
-        int speed;
+        //int speed;
 
     public:
         game();

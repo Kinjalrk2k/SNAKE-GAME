@@ -12,12 +12,14 @@
 #define xmax 75
 #define ymax 25
 
-#define ascii_food 233
-#define ascii_wall 178
+#define ascii_food 235
+#define ascii_wall 176
 #define ascii_body 219
 
 using namespace std;
 
+#ifndef GOTOXY_POS
+#define GOTOXY_POS
 //  position structure
 /*  REMEMBER: Console applications run in the 3rd quadrant
     of the cartesian coordinate system. The top-left is (0,0)   */
@@ -27,8 +29,15 @@ struct position
     int y;  //  y-axis value(top-to-bottom)
 };
 
-void gotoxy(int x, int y);
 void gotoxy(position pos);
+#endif
+
+#ifndef GOTOXY
+#define GOTOXY
+
+void gotoxy(int x, int y);
+
+#endif
 
 void gotoxy_offset(int x, int y);
 void gotoxy_offset(position pos);
@@ -36,6 +45,7 @@ void gotoxy_offset(position pos);
 extern position start; //  starting position of the maze
 extern int speed;
 extern char maze_file_location[100];
+extern int difficulty;
 
 enum direction
 {
@@ -48,7 +58,6 @@ class maze
     protected:
         char name[50];
         int maze_state[ymax][xmax];
-        int difficulty;
 
     public:
         maze();
@@ -68,7 +77,7 @@ class snake
 
     public:
         snake();
-        void print_snake();
+        void print_snake(int s);
         position move();
         position rotate(direction dir);
 };

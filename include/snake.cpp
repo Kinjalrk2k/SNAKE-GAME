@@ -3,6 +3,7 @@
 position start = {1, 1}; //  starting position of the maze
 int speed = 100;
 char maze_file_location[100];
+int difficulty;
 
 //  standard gotoxy function using seperate x and y arguments
 void gotoxy(int x, int y)
@@ -41,7 +42,6 @@ void gotoxy_offset(position pos)
 maze::maze() : maze_state{0}
 {
     strcpy(name, "Default Maze");
-    difficulty = 0;
 }
 
 void maze::write_maze()
@@ -69,7 +69,7 @@ void maze::write_maze()
     m.print_maze();
 
     int x=0, y=0;
-    while(true)
+    /*while(true)
     {
         gotoxy_offset(x, y);
 
@@ -99,6 +99,18 @@ void maze::write_maze()
         }
         else if((GetAsyncKeyState(VK_RETURN) & 0x8000))
             break;
+    }*/
+    
+    while(true)
+    {
+        system("pause>nul");
+        if(GetAsyncKeyState(VK_LBUTTON) & 0x8000)
+        {
+            POINT pt;
+            GetCursorPos(&pt);
+            gotoxy(5, 5);   cout<<pt.x<<", "<<pt.y;
+            _getch();
+        }
     }
 
     gotoxy(0, ymax+1);
@@ -119,20 +131,25 @@ void maze::load_maze()
     f.read((char*)&m, sizeof(m));
     f.close();
     *this = m;
+
+    calc_difficulty();
 }
 
 void maze::print_maze()
 {
+    HANDLE hConsole = GetStdHandle(STD_OUTPUT_HANDLE);
     for(int i=0; i<ymax; i++)
     {
         for(int j=0; j<xmax; j++)
         {
+            SetConsoleTextAttribute(hConsole, FOREGROUND_BLUE | FOREGROUND_INTENSITY);
             gotoxy_offset(j, i);
             if(maze_state[i][j] == 1)
                 cout<<(char)ascii_wall;
         }
     }
     gotoxy(0, ymax+4);
+    SetConsoleTextAttribute(hConsole, FOREGROUND_GREEN | FOREGROUND_RED	| FOREGROUND_BLUE);
 }
 
 int maze::calc_difficulty()
@@ -141,11 +158,11 @@ int maze::calc_difficulty()
     for(int i=0; i<ymax; i++)
     {
         for(int j=0; j<xmax; j++)
-            if(maze_state[i][j] == 0)
+            if(maze_state[i][j] == 1)
                 counter++;
     }
 
-    difficulty = (counter / (ymax*xmax)) * 100;
+    difficulty = ((counter*100) / (ymax*xmax));
 
     return difficulty;
 }
@@ -164,14 +181,37 @@ snake::snake()
     flow = RIGHT;
 }
 
-void snake::print_snake()
+
+void snake::print_snake(int s)  //  s=0 alive, s=1 dead
 {
+    HANDLE hConsole = GetStdHandle(STD_OUTPUT_HANDLE);
+    switch(s)
+    {
+        case 0:
+           SetConsoleTextAttribute(hConsole, FOREGROUND_GREEN | FOREGROUND_RED	| FOREGROUND_BLUE);
+           break;
+        case 1:
+            SetConsoleTextAttribute(hConsole, FOREGROUND_RED);
+            break;
+    }
     gotoxy_offset(head);   cout<<(char)ascii_body;
+
+    SetConsoleTextAttribute(hConsole, FOREGROUND_GREEN | FOREGROUND_RED	| FOREGROUND_BLUE);    
     for(int i=0; i<size-1; i++)
     {
+        switch(s)
+        {
+            case 0:
+               SetConsoleTextAttribute(hConsole, FOREGROUND_GREEN | FOREGROUND_RED	| FOREGROUND_BLUE);
+               break;
+            case 1:
+                SetConsoleTextAttribute(hConsole, FOREGROUND_RED);
+                break;
+        }
         gotoxy_offset(body[i]);
         cout<<(char)ascii_body;
     }
+    SetConsoleTextAttribute(hConsole, FOREGROUND_GREEN | FOREGROUND_RED	| FOREGROUND_BLUE);
 }
 
 position snake::move()

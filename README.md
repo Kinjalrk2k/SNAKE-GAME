@@ -19,6 +19,7 @@ Compile the code to produce the executable mazes\maze_creator.exe file by the fo
 g++ mazes\maze_creator.cpp include\snake.cpp -o mazes\maze_creator
 ````
 Run the main.exe file for playing the game and maze_creator.exe for creating a maze
+(Note: Maze creator is unstable for use)
 
 ### Notes
 Strictly meant for compilation and usage under Windows only (preferably using MinGW compiler toolkit).

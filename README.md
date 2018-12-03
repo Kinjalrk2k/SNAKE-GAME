@@ -1,5 +1,13 @@
 # SNAKE-GAME
-The 90s Snakes Game simulation
+The 90s Snakes Game simulation.
+
+[![ForTheBadge built-with-love](http://ForTheBadge.com/images/badges/built-with-love.svg)](https://github.com/Kinjalrk2k)
+[![GitHub license](https://img.shields.io/github/license/Naereen/StrapDown.js.svg)](https://github.com/Kinjalrk2k/SNAKE-GAME/blob/master/LICENSE)
+[![GitHub release](https://img.shields.io/github/release/Naereen/StrapDown.js.svg)](https://github.com/Kinjalrk2k/SNAKE-GAME/releases)
+
+
+
+
 
 ### Instructions for compilation
 Compile the code to produce the executable main file by the following command:

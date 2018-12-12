@@ -1,3 +1,4 @@
+/*  this is under development   */
 #include "..\\include\\snake.h"
 
 int main(int argc, char const *argv[])

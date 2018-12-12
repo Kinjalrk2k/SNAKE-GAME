@@ -1,0 +1,124 @@
+{
+    // See https://go.microsoft.com/fwlink/?LinkId=733558
+    // for the documentation about the tasks.json format
+    "version": "2.0.0",
+    "tasks": [
+        {
+            "label": "Compile snake.cpp",
+            "type": "shell",
+            "command": "g++",
+            "args": [
+                "-c",
+                "include\\snake.cpp",
+                "-o",
+                "include\\snake.o"
+            ],
+            "group": {
+                "kind": "build",
+                "isDefault": true
+            }
+        },
+
+        {
+            "label": "Compile game.cpp",
+            "type": "shell",
+            "command": "g++",
+            "args": [
+                "-c",
+                "include\\game.cpp",
+                "-o",
+                "include\\game.o"
+            ],
+            "group": {
+                "kind": "build",
+                "isDefault": true
+            }
+        },
+
+        {
+            "label": "Compile ai.cpp",
+            "type": "shell",
+            "command": "g++",
+            "args": [
+                "-c",
+                "include\\ai.cpp",
+                "-o",
+                "include\\ai.o"
+            ],
+            "group": {
+                "kind": "build",
+                "isDefault": true
+            }
+        },
+
+        {
+            "label": "Compile main.cpp",
+            "type": "shell",
+            "command": "g++",
+            "args": [
+                "-c",
+                "main.cpp",
+            ],
+            "group": {
+                "kind": "build",
+                "isDefault": true
+            }
+        },        
+
+        {
+            "label": "Build executable main.exe",
+            "type": "shell",
+            "command": "g++",
+            "args": [
+                "main.cpp",
+                "include\\snake.cpp",
+                "include\\game.cpp",
+                "include\\ai.cpp",
+                //"-L",
+                //"-lwinmm.lib",
+                "-o",
+                "main"                
+            ],
+            "group": {
+                "kind": "build",
+                "isDefault": true
+            }
+        },
+
+        {
+            "label": "Build executable maze_creator.exe",
+            "type": "shell",
+            "command": "g++",
+            "args": [
+                "mazes\\maze_creator.cpp",
+                "include\\snake.cpp",
+                "-o",
+                "mazes\\maze_creator"
+            ],
+            "group": {
+                "kind": "build",
+                "isDefault": true
+            }
+        },
+        
+        {
+            "label": "Run main.exe in CMD",     
+            "type": "shell",
+            "command": ["start cmd /k \"main.exe & pause & exit\""],
+            "group": {
+                "kind": "test",
+                "isDefault": true
+            }
+        },
+        
+        {
+            "label": "Run maze_creator.exe in CMD",     
+            "type": "shell",
+            "command": ["start cmd /k \"mazes\\maze_creator.exe & pause & exit\""],
+            "group": {
+                "kind": "test",
+                "isDefault": true
+            }
+        }  
+    ]
+}

@@ -1,3 +1,4 @@
+/*  maze and sake class defined here    */
 #ifndef SNAKE_H
 #define SNAKE_H
 
@@ -35,18 +36,21 @@ void gotoxy(position pos);
 #ifndef GOTOXY
 #define GOTOXY
 
+//  standard gotoxy function
 void gotoxy(int x, int y);
 
 #endif
 
-void gotoxy_offset(int x, int y);
+//  gotoxy with offsets
+void gotoxy_offset(int x, int y);   
 void gotoxy_offset(position pos);
 
 extern position start; //  starting position of the maze
-extern int speed;
-extern char maze_file_location[100];
-extern int difficulty;
+extern int speed;   //  snake speed, readable and editable through a file
+extern char maze_file_location[100];    //  dynamic locaton of the current maze file
+extern int difficulty;  //  captures the difficulty level of the maze
 
+//  enumerated data type direction to store flow direction and snake rotation
 enum direction
 {
     UP, DOWN, LEFT, RIGHT
@@ -56,30 +60,36 @@ enum direction
 class maze
 {
     protected:
-        char name[50];
-        int maze_state[ymax][xmax];
+        char name[50];  //  name of the maze
+        /*  possible values of maze_state[i][j]:
+            wall present = 1
+            wall absent = 0 */
+        int maze_state[ymax][xmax]; //  wall state of the maze 
 
     public:
-        maze();
-        void write_maze();
-        void load_maze();
-        void print_maze();
-        int calc_difficulty();
+        maze(); //  default constructor to initialise the members
+        void write_maze();  //  write maze to a file:   needs development
+        void load_maze();   //  load maze from predefined file
+        void print_maze();  //  print maze on the game
+
+        /*  difficulty level:
+            0 - 100 :   easiest - toughest  */
+        int calc_difficulty();  //  calculate the difficulty level of the maze
 };
 
 class snake
 {
     protected:
-        position head;
-        position body[(ymax*xmax)-1];
-        int size;
-        direction flow;
+        position head;  //  stores the position of the head f the snake in the maze
+        position body[(ymax*xmax)-1];   //  stores the position of the continuous body position following the head
+        int size;   //  current size of the snake
+        direction flow; //  current flow direction of the snake
 
     public:
-        snake();
-        void print_snake(int s);
-        position move();
-        position rotate(direction dir);
+        snake();    //  default constructor to initialise the class members
+        void print_snake(int s);    //  print the snake 
+        position move();    //  move the snake in the current flow
+        position rotate(direction dir); //  rotate the snake as flow passed as argument
 };
 
 #endif

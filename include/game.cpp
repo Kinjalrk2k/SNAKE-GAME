@@ -28,6 +28,7 @@ void ascii_art(const char* loc, int x=0, int y=0)
     }
 }
 
+/*  initialises the score with 0(starting score with)   */
 game::game()
 {
     score = 0;
@@ -38,16 +39,17 @@ bool game::validate_position(position pos)
 {
     for(int i=1; i<size-1; i++)
     {
-        if(pos.x == body[i].x && pos.y == body[i].y)
+        if(pos.x == body[i].x && pos.y == body[i].y)    //  if the posotion coincide with the snake body
             return false;
     }
 
-    if(maze_state[pos.y][pos.x] == 1)
+    if(maze_state[pos.y][pos.x] == 1)   //  if the posoition coincide with the maze wall
         return false;
 
     return true;
 }
 
+/*  printing the whole UI: self explanatory   */
 void game::print_UI()
 {
     gotoxy(0,0);
@@ -115,17 +117,22 @@ position game::generate_food()
 {
     do
     {
+        //  randomize the position for the new food
         food.x = rand()%xmax;
         food.y = rand()%ymax;
     }
     while(this->validate_position(food) == false);
+    //  checks whether the position of the new food is valid, or else create another one
 
     return food;
 }
 
-//  0 = game over   1 = game running
+/*  prints current game status  */
 void game::print_status(int s)
 {
+    /*  possible values of s:
+        0 = game over   
+        1 = game running    */
     gotoxy(1, ymax+4);   cout<<"Score: "<<score;
     gotoxy(1, ymax+3);
     switch(s)
@@ -136,6 +143,7 @@ void game::print_status(int s)
     }
 }
 
+/*  standalone function to append the scores in the score.dat file  */
 void write_score(int score)
 {
     fstream f;
@@ -144,19 +152,20 @@ void write_score(int score)
     f.close();
 }
 
+/*  runs the game   */
 void game::run_player()
 {
     HANDLE hConsole = GetStdHandle(STD_OUTPUT_HANDLE);
     srand(time(NULL));
 
-    load_maze();
-    print_UI();
-    start = {1, 1};
-    print_maze();
-    print_snake(0);
+    load_maze();    //  loads the maze from the targetted .dat file
+    print_UI();     //  prints the UI
+    start = {1, 1}; //  offset starting point
+    print_maze();   //  print the maze walls/boundaries
+    print_snake(0); //  print the initial snake position
 
     SetConsoleTextAttribute(hConsole, FOREGROUND_RED | FOREGROUND_INTENSITY);
-    gotoxy_offset(generate_food());    cout<<(char)ascii_food;
+    gotoxy_offset(generate_food());    cout<<(char)ascii_food;  //  generate and print food
     SetConsoleTextAttribute(hConsole, FOREGROUND_GREEN | FOREGROUND_RED	| FOREGROUND_BLUE);
     gotoxy(0, ymax+4);
 
@@ -164,59 +173,73 @@ void game::run_player()
 
     while(true)
     {
+        //  if heads of the snakes coinside with the food
         if(head.x == food.x && head.y == food.y)
         {
+            /*  trying out sound >_< */
             //system("start sounds\\sounder.exe sounds\\eat.wav");
             //PlaySound((LPCSTR)"sounds\\eat.wav", NULL, SND_FILENAME|SND_LOOP|SND_ASYNC);
-            size++;
-            score++;
+            size++;     //  size of the snake increases by 1
+            score++;    //  score increases by 1
             SetConsoleTextAttribute(hConsole, FOREGROUND_RED | FOREGROUND_INTENSITY);
-            gotoxy_offset(generate_food());    cout<<(char)ascii_food;
+            gotoxy_offset(generate_food());    cout<<(char)ascii_food;  //  generate and print a new food
             SetConsoleTextAttribute(hConsole, FOREGROUND_GREEN | FOREGROUND_RED	| FOREGROUND_BLUE);
             gotoxy(0, ymax+4);
             continue;
         }
 
+        //  when UP key is pressed once and the current flow is not DOWN
         if((GetAsyncKeyState(VK_UP) & 0x8000) && flow != DOWN)
-            gotoxy_offset(rotate(UP));
+            gotoxy_offset(rotate(UP));  //  rotate the snake head UP and also gotoxy to the last snake tail
 
+        //  when DOWN key is pressed once and the current flow is not UP
         else if((GetAsyncKeyState(VK_DOWN) & 0x8000) && flow != UP)
-            gotoxy_offset(rotate(DOWN));
+            gotoxy_offset(rotate(DOWN));    //  rotate the snake head DOWN and also gotoxy to the last snake tail
 
+        //  when LEFT key is pressed once and the current flow is not RIGHT
         else if((GetAsyncKeyState(VK_LEFT) & 0x8000) && flow !=RIGHT)
-            gotoxy_offset(rotate(LEFT));
+            gotoxy_offset(rotate(LEFT));    //  rotate the snake head LEFT and also gotoxy to the last snake tail
 
+        //  when RIGHT key is pressed once and the current flow is not LEFT
         else if((GetAsyncKeyState(VK_RIGHT) & 0x8000) && flow != LEFT)
-            gotoxy_offset(rotate(RIGHT));
+            gotoxy_offset(rotate(RIGHT));   //  rotate the snake head RIGHT and also gotoxy to the last snake tail
 
+        //  when ESC key is pressed once
         else if(GetAsyncKeyState(VK_ESCAPE) & 0x8000)
-            return;
+            return; //  exit current game
 
+        //  when SPACE key is pressed once
         else if(GetAsyncKeyState(VK_SPACE) & 0x8000)
         {
-            print_status(2);
+            //  pause current game till another key is pressed
+            print_status(2);    //  print game PAUSED
 
             system("pause>nul");
         }
 
-        else
-            gotoxy_offset(move());
+        else    //  if no keys are pressed :)
+            gotoxy_offset(move());  //  keep moving with the current flow and gotoxy to the last snake tail
  
-        cout<<" ";
-        if(validate_position(head) == false)
+        cout<<" ";  //  print space of 1 unit at the gotoxy position
+
+        if(validate_position(head) == false)    //  if head reaches an invalid position
         {
-            print_status(0);
-            print_snake(1);
-            write_score(score);
+            //  you are DEAD! :(
+            print_status(0);    //  prints GAME OVER
+            print_snake(1);     //  prints snake in RED colour
+            write_score(score); //  writes the score to the file
+
+            //  wait till another key is pressed
             system("pause>nul");
             while (cin.get() != '\n');
             return;
         }
 
+        //  print the snake and status in normal conditions
         print_snake(0);
         print_status(1);
         gotoxy(0,0);
-        Sleep(speed);
+        Sleep(speed);   //  restricts the seed of the snake to the defined value
     }
 }
 

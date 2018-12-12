@@ -1,9 +1,9 @@
 #include "snake.h"
 
 position start = {1, 1}; //  starting position of the maze
-int speed = 100;
-char maze_file_location[100];
-int difficulty;
+int speed = 100;    //  the default speed
+char maze_file_location[100];   //  location of the maze file
+int difficulty; //  difficulty of the maze
 
 //  standard gotoxy function using seperate x and y arguments
 void gotoxy(int x, int y)
@@ -23,6 +23,7 @@ void gotoxy(position pos)
     SetConsoleCursorPosition(GetStdHandle(STD_OUTPUT_HANDLE), coord);
 }
 
+//  offset gotoxy function with x and y arguments
 void gotoxy_offset(int x, int y)
 {
     COORD coord;
@@ -31,6 +32,7 @@ void gotoxy_offset(int x, int y)
     SetConsoleCursorPosition(GetStdHandle(STD_OUTPUT_HANDLE), coord);
 }
 
+//  offset gotoxy function with pointer arguments
 void gotoxy_offset(position pos)
 {
     COORD coord;
@@ -39,11 +41,14 @@ void gotoxy_offset(position pos)
     SetConsoleCursorPosition(GetStdHandle(STD_OUTPUT_HANDLE), coord);
 }
 
+//  initialises default maze name and state
 maze::maze() : maze_state{0}
 {
-    strcpy(name, "Default Maze");
+    //  loads up the default maze when targetted maze file is invalid or does not exsits
+    strcpy(name, "Default Maze");   
 }
 
+//  wirtes the maze into the file: still under development
 void maze::write_maze()
 {
     maze m;
@@ -122,12 +127,14 @@ void maze::write_maze()
     f.close();
 }
 
+//  load the maze from specified maze file
 void maze::load_maze()
 {
     maze m;
     fstream f;
     f.open(maze_file_location, ios::in | ios::binary);
 
+    //  reading maze from the file
     f.read((char*)&m, sizeof(m));
     f.close();
     *this = m;
@@ -135,6 +142,7 @@ void maze::load_maze()
     calc_difficulty();
 }
 
+//  prints the maze in the console window
 void maze::print_maze()
 {
     HANDLE hConsole = GetStdHandle(STD_OUTPUT_HANDLE);
@@ -152,6 +160,7 @@ void maze::print_maze()
     SetConsoleTextAttribute(hConsole, FOREGROUND_GREEN | FOREGROUND_RED	| FOREGROUND_BLUE);
 }
 
+//  calculating the maze difficulty
 int maze::calc_difficulty()
 {
     int counter = 0;
@@ -162,13 +171,17 @@ int maze::calc_difficulty()
                 counter++;
     }
 
+    /*  difficulty depends upon the no of free spaces in the maze matrix
+        i.e., no of 0(zeros)    */
     difficulty = ((counter*100) / (ymax*xmax));
 
     return difficulty;
 }
 
+//  initialises the default snake state
 snake::snake()
 {
+    //  default starting position of the snake(always same)
     head = {11, 10};
 
     body[0] = {10, 10};
@@ -181,7 +194,7 @@ snake::snake()
     flow = RIGHT;
 }
 
-
+//  prints the snake on the console window, upon the maze
 void snake::print_snake(int s)  //  s=0 alive, s=1 dead
 {
     HANDLE hConsole = GetStdHandle(STD_OUTPUT_HANDLE);
@@ -214,14 +227,17 @@ void snake::print_snake(int s)  //  s=0 alive, s=1 dead
     SetConsoleTextAttribute(hConsole, FOREGROUND_GREEN | FOREGROUND_RED	| FOREGROUND_BLUE);
 }
 
+//  moves the snake in the current flow direction
 position snake::move()
 {
-    position tail = body[size-2];
+    position tail = body[size-2];   //  the final tail position in the last frame
 
+    //  copies each of the position of the body to its previous one
     for(int i=(size - 2); i>0; i--)
         body[i] = body[i-1];
     body[0] = head;
 
+    //  moves the head as per current flow
     switch(flow)
     {
         case RIGHT: head.x++;    break;
@@ -230,6 +246,7 @@ position snake::move()
         case DOWN:  head.y++;    break;    
     }
 
+    //  maze end constraints: for maze rolling
     if(head.x < 0)
         head.x = xmax-1;
     else if(head.x > xmax-1)
@@ -239,59 +256,66 @@ position snake::move()
     else if(head.y > ymax-1)
         head.y = 0;
 
-    return tail;
+    return tail;    /*  returns the final tail position in the last frame
+                        to print one unit of space on the position  */ 
 }
 
+//  rotates the snake as per promted by the argument passed
 position snake::rotate(direction dir)
 {
-    position tail = body[size-2];
+    position tail = body[size-2];   //  the final tail position in the last frame
     switch(dir)
     {
-        case UP:
-            if(flow !=  DOWN)
+        case UP:    //  when the passed direction is UP
+            if(flow !=  DOWN)   //  checking weather the current flow is not in the reverse direction
             {
-                flow = UP;
+                flow = UP;  //  setting the current flow as the new one (as passed argument)
+                //  copies the position of each of the body to that of its previus one
                 for(int i=(size - 2); i>0; i--)
                     body[i] = body[i-1];
                 body[0] = head;
-                head.y--;
+                head.y--;   //  updates the new head according to the flow
             }
             break;
 
-        case DOWN:
-            if(flow !=  UP)
+        case DOWN:  //  when the passed direction is DOWN
+            if(flow !=  UP) //  checking weather the current flow is not in the reverse direction
             {
-                flow = DOWN;
+                flow = DOWN;    //  setting the current flow as the new one (as passed argument)
+                //  copies the position of each of the body to that of its previus one
                 for(int i=(size - 2); i>0; i--)
                     body[i] = body[i-1];
                 body[0] = head;
-                head.y++;
+                head.y++;   //  updates the new head according to the flow
             }
             break;
 
-        case LEFT:
-            if(flow !=  RIGHT)
+        case LEFT:  //  when the passed direction is LEFT
+            if(flow !=  RIGHT)  //  checking weather the current flow is not in the reverse direction
             {
-                flow = LEFT;
+                flow = LEFT;    //  setting the current flow as the new one (as passed argument)
+                //  copies the position of each of the body to that of its previus one
                 for(int i=(size - 2); i>0; i--)
                     body[i] = body[i-1];
                 body[0] = head;
-                head.x--;
+                head.x--;   //  updates the new head according to the flow
             }
             break;
         
-        case RIGHT:
-            if(flow !=  LEFT)
+        case RIGHT: //  when the passed direction is RIGHT
+            if(flow !=  LEFT)   //  checking weather the current flow is not in the reverse direction
             {
-                flow = RIGHT;
+                flow = RIGHT;   //  setting the current flow as the new one (as passed argument)
+                //  copies the position of each of the body to that of its previus one
                 for(int i=(size - 2); i>0; i--)
                     body[i] = body[i-1];
                 body[0] = head;
-                head.x++;
+                head.x++;   //  updates the new head according to the flow
             }
             break;
     }
 
+    //  maze end constraints: for maze rolling
     if(head.x < 0)
         head.x = xmax-1;
     else if(head.x > xmax-1)
@@ -301,5 +325,6 @@ position snake::rotate(direction dir)
     else if(head.y > ymax-1)
         head.y = 0;
 
-    return tail;
+    return tail;    /*  returns the final tail position in the last frame
+                        to print one unit of space on the position  */ 
 }

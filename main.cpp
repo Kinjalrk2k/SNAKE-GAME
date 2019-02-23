@@ -4,12 +4,12 @@
 #include "include\\menu_creator.h"
 #include "include\\sliding_control.h"
 
-//  addjusts window size to a predefined value
+//  adjusts window size to a predefined value
 void window()
 {
     HWND console = GetConsoleWindow();
     //MoveWindow(window_handle, x, y, width, height, redraw_window);
-    MoveWindow(console, 100, 100, 750, 570 , TRUE);
+    MoveWindow(console, 100, 100, 750, 650 , TRUE);
 }
 
 //  read the scores file and print the values from the same
